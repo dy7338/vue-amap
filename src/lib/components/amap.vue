@@ -8,7 +8,10 @@
 import guid from '../utils/guid';
 import registerMixin from '../mixins/register-component';
 import {lazyAMapApiLoaderInstance} from '../services/injected-amap-api-instance';
-
+//获取地图上webgl实例并销毁
+const destroyMapWebgl = ()=>{
+  document.querySelector(`canvas.amap-layer`)?.getContext('webgl')?.getExtension('WEBGL_lose_context')?.loseContext()
+}
 export default {
   name: 'el-amap',
   mixins: [registerMixin],
@@ -166,6 +169,8 @@ export default {
   },
   beforeDestroy() {
     if (this.$amapComponent) {
+      destroyMapWebgl()
+      this.$amapComponent.remove(this.$amapComponent.getLayers(),this.$amapComponent.getAllOverlays())
       this.$amapComponent.destroy();
       this.$amapComponent = null;
     }
